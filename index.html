@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Skyeng translation</title>
+		<link rel="stylesheet" href="index.css">
+
+	</head>
+	<script type='text/javascript'>
+	  if (!window.$ ) {
+			window.$ = window.jQuery = require('jquery')
+			window.doT = require('dot')
+		}
+		$(document).ready(function(){
+			let template = `
+			{{=it.text}}:
+			<ul>
+			{{~it.meanings :value:index}}
+				<li>{{=value.translation.text}} ({{=value.transcription}}) <a class='imghover'>📷<div><img src='https://{{=value.imageUrl}}'/></div></a></li>
+			{{~}}
+			</ul>
+	`
+			let comp_temp = doT.template(template)
+			let word = document.location.href.match(/word=(.*)/)[1]
+			$.get('https://dictionary.skyeng.ru/api/public/v1/words/search?_format=json&search='+word, function(data) {
+				if (data.length > 0) {
+					$('#translation').html(comp_temp(data[0]))
+				}
+//				$('#word').html(`<pre>${data}</pre>`)
+	//			console.log(data)
+			});
+
+			//$('#word').html(word)
+		})
+	</script>
+	<body>
+		<div class="container">
+			<header>
+			</header>
+			<section class="main">
+				<p id='translation'>
+
+				</p>
+			</section>
+			<footer></footer>
+		</div>
+	</body>
+</html>
